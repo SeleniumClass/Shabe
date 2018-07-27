@@ -1,5 +1,6 @@
 package com.stepdef;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -7,6 +8,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
+
+import com.clubExcelTests.ExcelColumn;
 import com.pagefactory.PageFactory_PremierLeague;
 import com.utility.Highlighter;
 import com.utility.Screenshot;
@@ -19,7 +22,8 @@ public class PremierLeague_StepDef {
 	WebDriver driver;
 	PageFactory_PremierLeague pg;
 	JavascriptExecutor js;
-	Actions act;
+	ArrayList<String> clubNames = new ArrayList<String>();
+	ArrayList<String> ColumnValue = new ArrayList<String>();
 	
 	
 	@Given("^User is able to open the Chrome browser$")
@@ -78,11 +82,10 @@ public class PremierLeague_StepDef {
 	@Then("^Observe all the club names$")
 	public void observe_all_the_club_names() throws Throwable {
 		
-		for(int i =0; i < pg.getclub().size(); i++) {
-			System.out.println(pg.getposition().get(i).getText() + ". "+ pg.getclub().get(i).getText());
-
-				}
-	   
+		for(WebElement club: pg.getclub()) {
+			clubNames.add(club.getText().toString());
+		}
+		System.out.println(clubNames);
 	}
 
 	@When("^Users highlight the club Chelsea$")
@@ -118,14 +121,32 @@ public class PremierLeague_StepDef {
 				Highlighter.getDrawBlueColor(driver, b);
 			}
 		}
+	}
+	@When("^Users import excel sheet of the club names$")
+	public void users_import_excel_sheet_of_the_club_names() throws Throwable {
 		
+		String excelPath="./ExcelData/WebTable Test Data.xlsx";
+			ColumnValue=ExcelColumn.columnValue(excelPath,0);
+			System.out.println("Value:"+ColumnValue);
+}
+
+	@Then("^Users are able to validate all clubs names from web table with excel club names$")
+	public void users_are_able_to_validate_all_clubs_names_from_web_table_with_excel_club_names() throws Throwable {
+			for(int i=0; i< ColumnValue.size(); i++) {
+				if(clubNames.contains(ColumnValue.get(i))) {
+					System.out.println("Exist: "+ColumnValue.get(i));
+				} else {
+					System.out.println("Not Exist: "+ColumnValue.get(i));
+				}
+			}
+}
 //		for(int i=0; i <pg.getclub().size(); i++) {
 //		if(pg.getposition().get(i).getText().equalsIgnoreCase("6")) {
 //			System.out.println("Chelsea's position is " + pg.getposition().get(i).getText());
 //			Highlighter2.getDrawBlueColor(driver,pg.getposition().get(i));
 //		}
 //	}
-	}
+	
 	
 
 	@Then("^Take a screenshot of the page$")

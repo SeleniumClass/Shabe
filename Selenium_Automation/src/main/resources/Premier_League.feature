@@ -14,5 +14,7 @@ Scenario: Successful collection and verification of club names and positions
 	When Users highlight the club Chelsea
 	Then Users are able to see Chelsea highlighted in blue box
 	Then See Chelsea position is '6' highlighted in a blue box
+	When Users import excel sheet of the club names
+	Then Users are able to validate all clubs names from web table with excel club names
 	Then Take a screenshot of the page
 	Then Close the browser
